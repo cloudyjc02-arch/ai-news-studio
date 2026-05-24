@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Published — AI News Studio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
+  .container { max-width: 800px; margin: 0 auto; }
+  .success-banner { background: #0d2018; border: 1px solid #4caf82; border-radius: 14px; padding: 24px 30px; margin-bottom: 30px; display: flex; align-items: center; gap: 16px; }
+  .success-banner .icon { font-size: 2.5rem; }
+  .success-banner h2 { color: #4caf82; font-size: 1.4rem; }
+  .success-banner p { color: #888; margin-top: 4px; }
+  .section { background: #13131f; border: 1px solid #222; border-radius: 14px; padding: 24px 30px; margin-bottom: 20px; }
+  .section h3 { color: #fff; margin-bottom: 16px; font-size: 1rem; display: flex; align-items: center; gap-8px; }
+  .section h3 span { margin-right: 8px; }
+  .article-body { white-space: pre-wrap; line-height: 1.8; font-size: 0.95rem; color: #ccc; }
+  .social-post { background: #0a0a14; border-radius: 10px; padding: 16px; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; color: #ddd; margin-bottom: 12px; border: 1px solid #1e1e30; }
+  .social-label { font-size: 0.8rem; color: #888; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .copy-btn { background: none; border: 1px solid #333; color: #aaa; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; float: right; transition: all 0.2s; }
+  .copy-btn:hover { border-color: #6c63ff; color: #6c63ff; }
+  .meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .meta-item { font-size: 0.85rem; color: #666; }
+  .meta-item strong { color: #aaa; }
+  .back-btn { display: inline-block; margin-top: 10px; padding: 12px 28px; background: #6c63ff; color: #fff; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  .back-btn:hover { background: #574fd6; }
+  .tag { display: inline-block; padding: 4px 12px; background: #1a1a2e; border: 1px solid #333; border-radius: 20px; font-size: 0.8rem; color: #aaa; margin-right: 6px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="success-banner">
+    <div class="icon">🚀</div>
+    <div>
+      <h2>Article Published Successfully!</h2>
+      <p>Saved to published_articles.json · Social posts generated</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3><span>📰</span> Published Article</h3>
+    <div class="meta">
+      <div class="meta-item"><strong>Title:</strong> {{ article.title }}</div>
+      <div class="meta-item"><strong>Score:</strong> {{ article.score }}/10</div>
+      <div class="meta-item"><strong>Published:</strong> {{ article.published_at[:19].replace('T',' ') }}</div>
+    </div>
+    <div style="margin-bottom:16px">
+      {% for tag in article.tags %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    <div class="article-body">{{ article.body }}</div>
+  </div>
+
+  <div class="section">
+    <h3><span>📱</span> Social Media Posts</h3>
+
+    <div class="social-label">🐦 Twitter / X
+      <button class="copy-btn" onclick="copyText('twitter-post')">Copy</button>
+    </div>
+    <div class="social-post" id="twitter-post">{{ twitter }}</div>
+
+    <div class="social-label">💼 LinkedIn
+      <button class="copy-btn" onclick="copyText('linkedin-post')">Copy</button>
+    </div>
+    <div class="social-post" id="linkedin-post">{{ linkedin }}</div>
+  </div>
+
+  <a href="/" class="back-btn">← Generate Another Article</a>
+
+</div>
+
+<script>
+  function copyText(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      event.target.innerText = 'Copied!';
+      setTimeout(() => event.target.innerText = 'Copy', 2000);
+    });
+  }
+</script>
+</body>
+</html>

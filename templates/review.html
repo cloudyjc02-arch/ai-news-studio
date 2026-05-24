@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Article — AI News Studio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
+  .container { max-width: 800px; margin: 0 auto; }
+  .header { margin-bottom: 30px; }
+  .header h1 { font-size: 1.6rem; color: #fff; margin-bottom: 6px; }
+  .header p { color: #888; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 8px; }
+  .badge.score-high { background: #0d2018; color: #4caf82; border: 1px solid #4caf82; }
+  .badge.score-mid { background: #2a1f00; color: #f0c040; border: 1px solid #f0c040; }
+  .badge.score-low { background: #2a0000; color: #e05c5c; border: 1px solid #e05c5c; }
+  .badge.tag { background: #1a1a2e; color: #aaa; border: 1px solid #333; }
+  .article-box { background: #13131f; border: 1px solid #222; border-radius: 14px; padding: 30px; margin-bottom: 24px; white-space: pre-wrap; line-height: 1.8; font-size: 0.95rem; }
+  .feedback-box { background: #1a1400; border: 1px solid #f0c04033; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; font-size: 0.9rem; color: #f0c040; }
+  .feedback-box strong { display: block; margin-bottom: 4px; }
+  .actions { background: #13131f; border: 1px solid #222; border-radius: 14px; padding: 24px; }
+  .actions h3 { margin-bottom: 16px; color: #fff; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { padding: 12px 28px; border-radius: 10px; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-approve { background: #4caf82; color: #fff; }
+  .btn-approve:hover { background: #3d9e70; }
+  .btn-revise { background: #f0c040; color: #000; }
+  .btn-revise:hover { background: #d4a800; }
+  .btn-reject { background: #e05c5c; color: #fff; }
+  .btn-reject:hover { background: #c44444; }
+  .notes-field { display: none; margin-top: 16px; }
+  .notes-field textarea { width: 100%; padding: 12px; background: #0a0a14; border: 1px solid #333; border-radius: 8px; color: #e0e0e0; font-size: 0.9rem; resize: vertical; min-height: 80px; }
+  .notes-field .submit-btn { margin-top: 10px; padding: 10px 24px; background: #6c63ff; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🧑 Human Review Required</h1>
+    <p>The AI has generated an article. Please review and make a decision.</p>
+  </div>
+
+  <div style="margin-bottom:20px">
+    {% set score = score %}
+    <span class="badge {{ 'score-high' if score >= 7 else 'score-mid' if score >= 5 else 'score-low' }}">
+      Score: {{ score }}/10
+    </span>
+    {% for tag in tags %}
+    <span class="badge tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+
+  <div class="article-box">{{ draft }}</div>
+
+  <div class="feedback-box">
+    <strong>🔎 Evaluator Feedback:</strong>
+    {{ feedback }}
+  </div>
+
+  <div class="actions">
+    <h3>Your Decision</h3>
+    <div class="btn-row">
+      <form action="/decision" method="POST" style="display:inline">
+        <input type="hidden" name="action" value="approve">
+        <button type="submit" class="btn btn-approve">✅ Approve & Publish</button>
+      </form>
+      <button class="btn btn-revise" onclick="toggleNotes('revise')">✏️ Request Revision</button>
+      <button class="btn btn-reject" onclick="toggleNotes('reject')">❌ Reject</button>
+    </div>
+
+    <div class="notes-field" id="notes-form">
+      <form action="/decision" method="POST">
+        <input type="hidden" name="action" id="notes-action" value="">
+        <textarea name="notes" placeholder="Add your notes or reason..."></textarea>
+        <button type="submit" class="submit-btn">Submit Decision</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleNotes(action) {
+    document.getElementById('notes-action').value = action;
+    document.getElementById('notes-form').style.display = 'block';
+  }
+</script>
+</body>
+</html>

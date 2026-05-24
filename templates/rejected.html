@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rejected — AI News Studio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .container { max-width: 560px; text-align: center; }
+  .icon { font-size: 4rem; margin-bottom: 20px; }
+  h1 { font-size: 1.8rem; color: #fff; margin-bottom: 10px; }
+  p { color: #888; font-size: 1rem; line-height: 1.6; margin-bottom: 30px; }
+  .notes-box { background: #13131f; border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 30px; text-align: left; }
+  .notes-box .label { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .notes-box .notes { font-size: 0.95rem; color: #ccc; line-height: 1.6; }
+  .btn-row { display: flex; gap: 12px; justify-content: center; }
+  .btn { padding: 12px 28px; border-radius: 10px; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s; }
+  .btn-primary { background: #6c63ff; color: #fff; }
+  .btn-primary:hover { background: #574fd6; }
+  .btn-secondary { background: #1a1a2e; color: #aaa; border: 1px solid #333; }
+  .btn-secondary:hover { border-color: #6c63ff; color: #fff; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="icon">
+    {% if action == 'reject' %}❌{% else %}✏️{% endif %}
+  </div>
+  <h1>
+    {% if action == 'reject' %}Article Rejected{% else %}Revision Requested{% endif %}
+  </h1>
+  <p>
+    {% if action == 'reject' %}
+      The article has been rejected and will not be published.
+    {% else %}
+      Your revision notes have been recorded. Run the pipeline again with updated instructions.
+    {% endif %}
+  </p>
+
+  {% if notes %}
+  <div class="notes-box">
+    <div class="label">Your Notes</div>
+    <div class="notes">{{ notes }}</div>
+  </div>
+  {% endif %}
+
+  <div class="btn-row">
+    <a href="/" class="btn btn-primary">← Try Again</a>
+    <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+  </div>
+</div>
+</body>
+</html>

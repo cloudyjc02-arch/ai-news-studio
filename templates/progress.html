@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Running Pipeline — AI News Studio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; padding: 40px 20px; }
+  .container { max-width: 700px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 { font-size: 1.8rem; color: #fff; }
+  .header p { color: #888; margin-top: 6px; }
+  .log-box { background: #0a0a14; border: 1px solid #222; border-radius: 14px; padding: 24px; min-height: 300px; font-family: monospace; font-size: 0.9rem; line-height: 1.8; }
+  .log-entry { padding: 4px 0; border-bottom: 1px solid #111; }
+  .log-entry.node { color: #6c63ff; font-weight: bold; }
+  .log-entry.success { color: #4caf82; }
+  .log-entry.error { color: #e05c5c; }
+  .log-entry.score { color: #f0c040; }
+  .log-entry.hitl { color: #ff9944; font-weight: bold; }
+  .log-entry.start { color: #aaa; }
+  .log-entry.info { color: #888; }
+  .spinner { display: inline-block; width: 10px; height: 10px; border: 2px solid #6c63ff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .redirect-msg { display: none; text-align: center; margin-top: 30px; }
+  .redirect-msg p { color: #6c63ff; font-size: 1.1rem; font-weight: 600; }
+  .nodes { display: flex; justify-content: space-between; margin-bottom: 30px; }
+  .node-step { text-align: center; flex: 1; }
+  .node-dot { width: 36px; height: 36px; border-radius: 50%; background: #1a1a2e; border: 2px solid #333; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; font-size: 1rem; transition: all 0.4s; }
+  .node-dot.active { border-color: #6c63ff; background: #1e1a40; box-shadow: 0 0 12px #6c63ff55; }
+  .node-dot.done { border-color: #4caf82; background: #0d2018; }
+  .node-label { font-size: 0.75rem; color: #666; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🎬 Running Pipeline</h1>
+    <p>Topic: <strong style="color:#fff">{{ topic }}</strong></p>
+  </div>
+
+  <div class="nodes">
+    <div class="node-step"><div class="node-dot" id="n1">🔍</div><div class="node-label">Research</div></div>
+    <div class="node-step"><div class="node-dot" id="n2">✍️</div><div class="node-label">Write</div></div>
+    <div class="node-step"><div class="node-dot" id="n3">🔎</div><div class="node-label">Evaluate</div></div>
+    <div class="node-step"><div class="node-dot" id="n4">🧑</div><div class="node-label">HITL</div></div>
+    <div class="node-step"><div class="node-dot" id="n5">🚀</div><div class="node-label">Publish</div></div>
+  </div>
+
+  <div class="log-box" id="log">
+    <div class="log-entry info"><span class="spinner"></span> Initializing pipeline...</div>
+  </div>
+
+  <div class="redirect-msg" id="redirect-msg">
+    <p>✅ Article ready for review — redirecting you now...</p>
+  </div>
+</div>
+
+<script>
+  const log = document.getElementById('log');
+  const nodes = ['n1','n2','n3','n4','n5'];
+  let currentNode = 0;
+
+  function activateNode(i) {
+    if (i > 0) document.getElementById(nodes[i-1]).classList.replace('active','done');
+    if (i < nodes.length) document.getElementById(nodes[i]).classList.add('active');
+  }
+
+  activateNode(0);
+
+  const es = new EventSource('/stream');
+  es.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    if (data.type === 'ping') return;
+
+    if (data.type === 'hitl_ready') {
+      activateNode(3);
+      document.getElementById('redirect-msg').style.display = 'block';
+      es.close();
+      setTimeout(() => window.location.href = '/review', 2000);
+      return;
+    }
+
+    if (data.type === 'done' || data.type === 'error') {
+      es.close();
+      return;
+    }
+
+    const div = document.createElement('div');
+    div.className = `log-entry ${data.type}`;
+    div.innerHTML = data.message;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+
+    // Advance node indicator based on message content
+    const msg = data.message || '';
+    if (msg.includes('Node 1') || msg.includes('Fetching')) activateNode(0);
+    if (msg.includes('Node 2') || msg.includes('Writing')) activateNode(1);
+    if (msg.includes('Node 3') || msg.includes('Evaluate')) activateNode(2);
+    if (msg.includes('Node 4') || msg.includes('HITL')) activateNode(3);
+  };
+</script>
+</body>
+</html>

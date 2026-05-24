@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI News Studio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .container { text-align: center; max-width: 600px; padding: 40px 20px; }
+  .logo { font-size: 3rem; margin-bottom: 10px; }
+  h1 { font-size: 2rem; color: #fff; margin-bottom: 8px; }
+  p { color: #888; margin-bottom: 40px; font-size: 1.1rem; }
+  .form-group { display: flex; gap: 12px; }
+  input[type="text"] { flex: 1; padding: 16px 20px; border-radius: 12px; border: 1px solid #333; background: #1a1a2e; color: #fff; font-size: 1rem; outline: none; transition: border 0.2s; }
+  input[type="text"]:focus { border-color: #6c63ff; }
+  button { padding: 16px 32px; background: #6c63ff; color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  button:hover { background: #574fd6; }
+  .tags { margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .tag { padding: 6px 14px; background: #1a1a2e; border: 1px solid #333; border-radius: 20px; font-size: 0.85rem; cursor: pointer; color: #aaa; transition: all 0.2s; }
+  .tag:hover { border-color: #6c63ff; color: #fff; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">🎬</div>
+  <h1>AI News Studio</h1>
+  <p>Enter a topic and watch multi-agent AI write a full news article.</p>
+  <form action="/run" method="POST">
+    <div class="form-group">
+      <input type="text" name="topic" placeholder="e.g. climate change 2025" required>
+      <button type="submit">Generate</button>
+    </div>
+    <div class="tags">
+      <span class="tag" onclick="document.querySelector('input').value=this.innerText">artificial intelligence</span>
+      <span class="tag" onclick="document.querySelector('input').value=this.innerText">climate change</span>
+      <span class="tag" onclick="document.querySelector('input').value=this.innerText">space exploration</span>
+      <span class="tag" onclick="document.querySelector('input').value=this.innerText">cybersecurity</span>
+    </div>
+  </form>
+</div>
+</body>
+</html>
